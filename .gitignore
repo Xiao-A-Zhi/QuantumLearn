@@ -1,0 +1,23 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+UserSettings/
+
+# Visual Studio / Rider
+.vscode/
+.vs/
+*.sln*
+*.csproj
+*.user
+*.userprefs
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
