@@ -1,3 +1,4 @@
+using Photon.Deterministic;
 using UnityEngine.Scripting;
 
 namespace Quantum.QuantumUser.Simulation
@@ -14,12 +15,33 @@ namespace Quantum.QuantumUser.Simulation
 
         public override void Update(Frame frame, ref Filter filter)
         {
-            filter.Body->AddForce(filter.Transform->Up);
+            // gets the input for player 0
+            var input = frame.GetPlayerInput(0);
+
+            UpdateShipMovement(frame, ref filter, input);
         }
 
         private void UpdateShipMovement(Frame frame, ref Filter filter, Input* input)
         {
-            
+            FP shipAcceleration = 7;
+            FP turnSpeed = 8;
+
+            if (input->Up)
+            {
+                filter.Body->AddForce(filter.Transform->Up * shipAcceleration);
+            }
+
+            if (input->Left)
+            {
+                filter.Body->AddTorque(turnSpeed);
+            }
+
+            if (input->Right)
+            {
+                filter.Body->AddTorque(-turnSpeed);
+            }
+
+            filter.Body->AngularVelocity = FPMath.Clamp(filter.Body->AngularVelocity, -turnSpeed, turnSpeed);
         }
     }
 }
