@@ -21,7 +21,7 @@ Photon Quantum 是一个高性能的确定性 ECS 框架，专为使用 Unity �
 ### 环境要求
 
 - Unity 2022.3.62f2 或更高版本
-- Photon Quantum SDK v3
+- Photon Quantum SDK v3.0.8
 - 支持 .NET Standard 2.1
 
 ### 安装步骤
@@ -177,13 +177,14 @@ namespace Quantum.QuantumUser.Simulation
 
 ### 定义输入
 
-在 `.qtn` 文件中定义输入：
+在 `.qtn` 文件中定义输入（参考 `Input.qtn`）：
 
 ```qtn
 input {
-    button Jump;
-    button Attack;
-    FPVector2 Movement;
+    button Left;
+    button Right;
+    button Up;
+    button Fire;
 }
 ```
 
@@ -219,7 +220,7 @@ input {
 
 ## 📄 许可证
 
-本项目基于 Photon Quantum SDK 构建，遵循相应的许可协议。详见 `Assets/Photon/Quantum/LICENSE.md`。
+本项目基于 Photon Quantum SDK 构建，遵循 Photon Engine 的许可协议。详见 [Photon Engine 许可条款](https://www.photonengine.com/terms)。
 
 ## 🙏 致谢
 
