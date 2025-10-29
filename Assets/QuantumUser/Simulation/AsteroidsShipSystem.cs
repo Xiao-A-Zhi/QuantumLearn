@@ -3,6 +3,7 @@ using UnityEngine.Scripting;
 
 namespace Quantum.QuantumUser.Simulation
 {
+    // 飞船控制系统
     [Preserve]
     public unsafe class AsteroidsShipSystem : SystemMainThreadFilter<AsteroidsShipSystem.Filter>
     {
@@ -15,8 +16,12 @@ namespace Quantum.QuantumUser.Simulation
 
         public override void Update(Frame frame, ref Filter filter)
         {
-            // gets the input for player 0
-            var input = frame.GetPlayerInput(0);
+            // gets the input for the player controlling this ship
+            Input* input = default;
+            if (frame.Unsafe.TryGetPointer<PlayerLink>(filter.Entity, out var playerLink))
+            {
+                input = frame.GetPlayerInput(playerLink->PlayerRef);
+            }
 
             UpdateShipMovement(frame, ref filter, input);
         }
