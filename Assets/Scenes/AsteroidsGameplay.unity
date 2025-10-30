@@ -541,13 +541,16 @@ MonoBehaviour:
     Seed: 0
     Map:
       Id:
-        Value: 455447620474430094
+        Value: 312247151868862260
     SimulationConfig:
       Id:
         Value: 336878135528974106
     SystemsConfig:
       Id:
         Value: 360928944100815128
+    GameConfig:
+      Id:
+        Value: 492019294909711948
   UseRandomSeed: 0
   SessionConfig: {fileID: 0}
   LocalPlayers:

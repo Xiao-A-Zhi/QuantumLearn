@@ -3,7 +3,7 @@ using UnityEngine.Scripting;
 
 namespace Quantum.QuantumUser.Simulation
 {
-    // 飞船控制系统
+    // 飞船控制系统，SystemMainThreadFilter表示该系统在主线程上运行，并且使用过滤器来选择特定的实体进行处理
     [Preserve]
     public unsafe class AsteroidsShipSystem : SystemMainThreadFilter<AsteroidsShipSystem.Filter>
     {
@@ -12,6 +12,7 @@ namespace Quantum.QuantumUser.Simulation
             public EntityRef Entity;
             public Transform2D* Transform;
             public PhysicsBody2D* Body;
+            public AsteroidsShip* AsteroidsShip; // 标记为飞船实体，用于过滤
         }
 
         public override void Update(Frame frame, ref Filter filter)
