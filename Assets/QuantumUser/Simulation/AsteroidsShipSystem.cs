@@ -3,7 +3,7 @@ using UnityEngine.Scripting;
 
 namespace Quantum.QuantumUser.Simulation
 {
-    // 飞船控制系统，SystemMainThreadFilter表示该系统在主线程上运行，并且使用过滤器来选择特定的实体进行处理
+    // 飞船控制系统，用于处理飞船的各种输入和行为，SystemMainThreadFilter表示该系统在主线程上运行，并且使用过滤器来选择特定的实体进行处理
     [Preserve]
     public unsafe class AsteroidsShipSystem : SystemMainThreadFilter<AsteroidsShipSystem.Filter>
     {
@@ -25,12 +25,14 @@ namespace Quantum.QuantumUser.Simulation
             }
 
             UpdateShipMovement(frame, ref filter, input);
+            UpdateShipFire(frame, ref filter, input);
         }
 
         private void UpdateShipMovement(Frame frame, ref Filter filter, Input* input)
         {
-            FP shipAcceleration = 7;
-            FP turnSpeed = 8;
+            var config = frame.FindAsset(filter.AsteroidsShip->ShipConfig);
+            FP shipAcceleration = config.ShipAceleration;
+            FP turnSpeed = config.ShipTurnSpeed;
 
             if (input->Up)
             {
@@ -48,6 +50,26 @@ namespace Quantum.QuantumUser.Simulation
             }
 
             filter.Body->AngularVelocity = FPMath.Clamp(filter.Body->AngularVelocity, -turnSpeed, turnSpeed);
+        }
+
+        private void UpdateShipFire(Frame frame, ref Filter filter, Input* input)
+        {
+            var config = frame.FindAsset(filter.AsteroidsShip->ShipConfig);
+
+            // 根据开火间隔控制射击，每次开火后重置间隔时间
+            if (input->Fire && filter.AsteroidsShip->FireInterval <= 0)
+            {
+                // 通过frame获取的Config对筛选到的实体组件进行赋值
+                filter.AsteroidsShip->FireInterval = config.FireInterval;
+                var relativeOffset = FPVector2.Up * config.ShotOffset;
+                var spawnPosition = filter.Transform->TransformPoint(relativeOffset);
+                frame.Signals.AsteroidsShipShoot(filter.Entity, spawnPosition, config.ProjectilePrototype);
+            }
+            else
+            {
+                // 减少射击间隔时间
+                filter.AsteroidsShip->FireInterval -= frame.DeltaTime;
+            }
         }
     }
 }

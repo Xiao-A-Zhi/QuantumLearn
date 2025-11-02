@@ -148,7 +148,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 713962735866066987}
-  - component: {fileID: 5822818231083427909}
   - component: {fileID: 5965722372227568241}
   - component: {fileID: 8008342886471971725}
   - component: {fileID: 2267450467991623195}
@@ -175,14 +174,6 @@ Transform:
   - {fileID: 3299199037604851300}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5822818231083427909
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7443365685358942288}
-  m_Mesh: {fileID: 5264932889592146542, guid: 498d1eb87a123c1478b396be45490049, type: 2}
 --- !u!114 &5965722372227568241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,7 +451,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
+    ShipConfig:
+      Id:
+        Value: 376199192259603099
+    FireInterval:
+      RawValue: 0
 --- !u!1 &7599361166431096173
 GameObject:
   m_ObjectHideFlags: 0

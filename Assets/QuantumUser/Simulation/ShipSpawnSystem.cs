@@ -2,7 +2,7 @@
 
 namespace Quantum.QuantumUser.Simulation
 {
-    // 玩家生成系统，SystemSignalsOnly表示该系统只响应信号，类似于事件驱动，ISignalOnPlayerAdded是一个信号接口，当有玩家加入时触发
+    // 玩家生成系统，SystemSignalsOnly表示该系统只响应信号，类似于事件驱动，ISignalOnPlayerAdded是一个默认的信号接口，当有玩家加入时触发
     [Preserve]
     public unsafe class ShipSpawnSystem : SystemSignalsOnly, ISignalOnPlayerAdded
     {
