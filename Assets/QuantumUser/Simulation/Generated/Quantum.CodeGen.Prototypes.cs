@@ -52,8 +52,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.AsteroidsAsteroid))]
   public unsafe partial class AsteroidsAsteroidPrototype : ComponentPrototype<Quantum.AsteroidsAsteroid> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
+    public AssetRef<EntityPrototype> ChildAsteroid;
     partial void MaterializeUser(Frame frame, ref Quantum.AsteroidsAsteroid result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.AsteroidsAsteroid component = default;
@@ -61,6 +60,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.AsteroidsAsteroid result, in PrototypeMaterializationContext context = default) {
+        result.ChildAsteroid = this.ChildAsteroid;
         MaterializeUser(frame, ref result, in context);
     }
   }

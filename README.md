@@ -218,6 +218,8 @@ input {
    - 使用 Quantum 的内置调试工具
    - 利用确定性特性进行重放调试
 
+> 基础概念与用法说明已移至 `Assets/Readme.md` 的“概念速查”文档，便于在 Unity 内部查阅。
+
 ## 📄 许可证
 
 本项目基于 Photon Quantum SDK 构建，遵循 Photon Engine 的许可协议。详见 [Photon Engine 许可条款](https://www.photonengine.com/terms)。

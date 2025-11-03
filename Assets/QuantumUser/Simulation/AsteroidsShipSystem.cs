@@ -3,7 +3,6 @@ using UnityEngine.Scripting;
 
 namespace Quantum.QuantumUser.Simulation
 {
-    // 飞船控制系统，用于处理飞船的各种输入和行为，SystemMainThreadFilter表示该系统在主线程上运行，并且使用过滤器来选择特定的实体进行处理
     [Preserve]
     public unsafe class AsteroidsShipSystem : SystemMainThreadFilter<AsteroidsShipSystem.Filter>
     {
@@ -12,12 +11,11 @@ namespace Quantum.QuantumUser.Simulation
             public EntityRef Entity;
             public Transform2D* Transform;
             public PhysicsBody2D* Body;
-            public AsteroidsShip* AsteroidsShip; // 标记为飞船实体，用于过滤
+            public AsteroidsShip* AsteroidsShip; // 冷却/配置引用
         }
 
         public override void Update(Frame frame, ref Filter filter)
         {
-            // gets the input for the player controlling this ship
             Input* input = default;
             if (frame.Unsafe.TryGetPointer<PlayerLink>(filter.Entity, out var playerLink))
             {
@@ -36,7 +34,7 @@ namespace Quantum.QuantumUser.Simulation
 
             if (input->Up)
             {
-                filter.Body->AddForce(filter.Transform->Up * shipAcceleration);
+                filter.Body->AddForce(filter.Transform->Up * shipAcceleration); // 朝向推力
             }
 
             if (input->Left)
@@ -56,10 +54,8 @@ namespace Quantum.QuantumUser.Simulation
         {
             var config = frame.FindAsset(filter.AsteroidsShip->ShipConfig);
 
-            // 根据开火间隔控制射击，每次开火后重置间隔时间
             if (input->Fire && filter.AsteroidsShip->FireInterval <= 0)
             {
-                // 通过frame获取的Config对筛选到的实体组件进行赋值
                 filter.AsteroidsShip->FireInterval = config.FireInterval;
                 var relativeOffset = FPVector2.Up * config.ShotOffset;
                 var spawnPosition = filter.Transform->TransformPoint(relativeOffset);
@@ -67,7 +63,6 @@ namespace Quantum.QuantumUser.Simulation
             }
             else
             {
-                // 减少射击间隔时间
                 filter.AsteroidsShip->FireInterval -= frame.DeltaTime;
             }
         }

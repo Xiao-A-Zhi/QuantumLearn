@@ -640,18 +640,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct AsteroidsAsteroid : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
+    public AssetRef<EntityPrototype> ChildAsteroid;
     public override readonly Int32 GetHashCode() {
       unchecked { 
         var hash = 5651;
+        hash = hash * 31 + ChildAsteroid.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (AsteroidsAsteroid*)ptr;
+        AssetRef.Serialize(&p->ChildAsteroid, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -720,12 +722,28 @@ namespace Quantum {
         PlayerRef.Serialize(&p->PlayerRef, serializer);
     }
   }
+  public unsafe partial interface ISignalSpawnAsteroid : ISignal {
+    void SpawnAsteroid(Frame f, AssetRef<EntityPrototype> childPrototype, EntityRef parent);
+  }
+  public unsafe partial interface ISignalOnCollisionProjectileHitShip : ISignal {
+    void OnCollisionProjectileHitShip(Frame f, CollisionInfo2D info, AsteroidsProjectile* projectile, AsteroidsShip* ship);
+  }
+  public unsafe partial interface ISignalOnCollisionProjectileHitAsteroid : ISignal {
+    void OnCollisionProjectileHitAsteroid(Frame f, CollisionInfo2D info, AsteroidsProjectile* projectile, AsteroidsAsteroid* asteroid);
+  }
+  public unsafe partial interface ISignalOnCollisionAsteroidHitShip : ISignal {
+    void OnCollisionAsteroidHitShip(Frame f, CollisionInfo2D info, AsteroidsShip* ship, AsteroidsAsteroid* asteroid);
+  }
   public unsafe partial interface ISignalAsteroidsShipShoot : ISignal {
     void AsteroidsShipShoot(Frame f, EntityRef owner, FPVector2 spawnPosition, AssetRef<EntityPrototype> projectilePrototype);
   }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
+    private ISignalSpawnAsteroid[] _ISignalSpawnAsteroidSystems;
+    private ISignalOnCollisionProjectileHitShip[] _ISignalOnCollisionProjectileHitShipSystems;
+    private ISignalOnCollisionProjectileHitAsteroid[] _ISignalOnCollisionProjectileHitAsteroidSystems;
+    private ISignalOnCollisionAsteroidHitShip[] _ISignalOnCollisionAsteroidHitShipSystems;
     private ISignalAsteroidsShipShoot[] _ISignalAsteroidsShipShootSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
@@ -738,6 +756,10 @@ namespace Quantum {
     }
     partial void InitGen() {
       Initialize(this, this.SimulationConfig.Entities, 256);
+      _ISignalSpawnAsteroidSystems = BuildSignalsArray<ISignalSpawnAsteroid>();
+      _ISignalOnCollisionProjectileHitShipSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitShip>();
+      _ISignalOnCollisionProjectileHitAsteroidSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitAsteroid>();
+      _ISignalOnCollisionAsteroidHitShipSystems = BuildSignalsArray<ISignalOnCollisionAsteroidHitShip>();
       _ISignalAsteroidsShipShootSystems = BuildSignalsArray<ISignalAsteroidsShipShoot>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
@@ -808,6 +830,42 @@ namespace Quantum {
       Physics3D?.Init(_globals->PhysicsState3D.MapStaticCollidersState.TrackedMap);
     }
     public unsafe partial struct FrameSignals {
+      public void SpawnAsteroid(AssetRef<EntityPrototype> childPrototype, EntityRef parent) {
+        var array = _f._ISignalSpawnAsteroidSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.SpawnAsteroid(_f, childPrototype, parent);
+          }
+        }
+      }
+      public void OnCollisionProjectileHitShip(CollisionInfo2D info, AsteroidsProjectile* projectile, AsteroidsShip* ship) {
+        var array = _f._ISignalOnCollisionProjectileHitShipSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnCollisionProjectileHitShip(_f, info, projectile, ship);
+          }
+        }
+      }
+      public void OnCollisionProjectileHitAsteroid(CollisionInfo2D info, AsteroidsProjectile* projectile, AsteroidsAsteroid* asteroid) {
+        var array = _f._ISignalOnCollisionProjectileHitAsteroidSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnCollisionProjectileHitAsteroid(_f, info, projectile, asteroid);
+          }
+        }
+      }
+      public void OnCollisionAsteroidHitShip(CollisionInfo2D info, AsteroidsShip* ship, AsteroidsAsteroid* asteroid) {
+        var array = _f._ISignalOnCollisionAsteroidHitShipSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnCollisionAsteroidHitShip(_f, info, ship, asteroid);
+          }
+        }
+      }
       public void AsteroidsShipShoot(EntityRef owner, FPVector2 spawnPosition, AssetRef<EntityPrototype> projectilePrototype) {
         var array = _f._ISignalAsteroidsShipShootSystems;
         for (Int32 i = 0; i < array.Length; ++i) {

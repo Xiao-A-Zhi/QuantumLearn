@@ -17,8 +17,7 @@ namespace Quantum.QuantumUser.Simulation
             var config = frame.FindAsset(frame.RuntimeConfig.GameConfig);
             if (IsOutOfBounds(filter.Transform->Position, config.MapExtends, out var newPosition))
             {
-                // Teleport是Transform2D组件的方法，用于瞬移实体到新的位置
-                filter.Transform->Teleport(frame, newPosition);
+                filter.Transform->Teleport(frame, newPosition); // 屏幕穿越
             }
         }
 
@@ -29,11 +28,9 @@ namespace Quantum.QuantumUser.Simulation
             if (position.X >= -mapExtends.X && position.X <= mapExtends.X &&
                 position.Y >= -mapExtends.Y && position.Y <= mapExtends.Y)
             {
-                // 在边界内
                 return false;
             }
 
-            // 超出边界，计算新的位置
             if (position.X < -mapExtends.X)
             {
                 newPosition.X = mapExtends.X;
@@ -43,7 +40,6 @@ namespace Quantum.QuantumUser.Simulation
                 newPosition.X = -mapExtends.X;
             }
 
-            // 处理Y轴边界
             if (position.Y < -mapExtends.Y)
             {
                 newPosition.Y = mapExtends.Y;

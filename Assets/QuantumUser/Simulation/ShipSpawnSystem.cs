@@ -8,15 +8,15 @@ namespace Quantum.QuantumUser.Simulation
     {
         public void OnPlayerAdded(Frame frame, PlayerRef player, bool firstTime)
         {
-            RuntimePlayer data = frame.GetPlayerData(player);
+            RuntimePlayer data = frame.GetPlayerData(player); // 读取玩家运行时数据（包含外观/原型引用）
 
-            // resolve the reference to the avatar prototype.
+            // 解析玩家飞船的原型引用（从资源表中查找）
             var entityPrototypAsset = frame.FindAsset<EntityPrototype>(data.PlayerAvatar);
 
-            // Create a new entity for the player based on the prototype.
+            // 基于原型创建实体
             var shipEntity = frame.Create(entityPrototypAsset);
 
-            // Create a PlayerLink component. Initialize it with the player. Add the component to the player entity.
+            // 绑定 PlayerLink 组件，标记该实体属于哪个玩家
             frame.Add(shipEntity, new PlayerLink() { PlayerRef = player });
         }
     }
