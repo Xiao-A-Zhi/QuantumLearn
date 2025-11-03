@@ -129,7 +129,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 0
     CallbackFlags:
-      Value: 0
+      Value: 2
   PhysicsBody:
     IsEnabled: 1
     Config2D: 116
@@ -312,7 +312,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
+    ChildAsteroid:
+      Id:
+        Value: 1395498859291182114
 --- !u!1 &8292706355485539052
 GameObject:
   m_ObjectHideFlags: 0

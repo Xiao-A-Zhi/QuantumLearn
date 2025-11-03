@@ -2,31 +2,36 @@
 
 namespace Quantum.QuantumUser.Simulation
 {
-    // 防裁剪（IL2CPP/Linker）
+    // 统一处理小行星相关碰撞的系统
     [Preserve]
     public unsafe class AsteroidsCollisionsSystem : SystemSignalsOnly, ISignalOnCollisionEnter2D
     {
-        // 处理 2D 碰撞进入：按组件判断双方类型并分支处理
+        /// <summary>
+        /// 碰撞后调用对应的信号处理函数
+        /// </summary>
+        /// <param name="frame"></param>
+        /// <param name="info"></param>
         public void OnCollisionEnter2D(Frame frame, CollisionInfo2D info)
         {
-            // 本方是 Projectile
-            if (frame.Unsafe.TryGetPointer<AsteroidsProjectile>(info.Entity, out _))
+            // Projectile is colliding with something
+            if (frame.Unsafe.TryGetPointer<AsteroidsProjectile>(info.Entity, out var projectile))
             {
-                if (frame.Unsafe.TryGetPointer<AsteroidsShip>(info.Other, out _))
+                if (frame.Unsafe.TryGetPointer<AsteroidsShip>(info.Other, out var ship))
                 {
-                    // Projectile 击中 Ship（TODO：伤害/销毁/特效/计分）
+                    frame.Signals.OnCollisionProjectileHitShip(info, projectile, ship);
                 }
-                else if (frame.Unsafe.TryGetPointer<AsteroidsAsteroid>(info.Other, out _))
+                else if (frame.Unsafe.TryGetPointer<AsteroidsAsteroid>(info.Other, out var asteroid))
                 {
-                    // Projectile 击中 Asteroid（TODO：分裂/破碎/小陨石生成）
+                    frame.Signals.OnCollisionProjectileHitAsteroid(info, projectile, asteroid);
                 }
             }
-            // 本方是 Ship
-            else if (frame.Unsafe.TryGetPointer<AsteroidsShip>(info.Entity, out _))
+
+            // Ship is colliding with something
+            else if (frame.Unsafe.TryGetPointer<AsteroidsShip>(info.Entity, out var ship))
             {
-                if (frame.Unsafe.TryGetPointer<AsteroidsAsteroid>(info.Other, out _))
+                if (frame.Unsafe.TryGetPointer<AsteroidsAsteroid>(info.Other, out var asteroid))
                 {
-                    // Asteroid 撞到 Ship（TODO：扣血/无敌帧/重生）
+                    frame.Signals.OnCollisionAsteroidHitShip(info, ship, asteroid);
                 }
             }
         }
